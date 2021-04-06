@@ -879,7 +879,9 @@ class Response extends AbstractMessage implements \Serializable
     {
         $errorMessage = null;
         $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
+        if (version_compare(PHP_VERSION, '8.0.0') < 0) {
+            $disableEntities = libxml_disable_entity_loader(true);
+        }
         libxml_clear_errors();
 
         try {
@@ -893,7 +895,9 @@ class Response extends AbstractMessage implements \Serializable
 
         libxml_clear_errors();
         libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
+        if (version_compare(PHP_VERSION, '8.0.0') < 0) {
+            libxml_disable_entity_loader($disableEntities);
+        }
 
         if ($errorMessage) {
             throw new RuntimeException('Unable to parse response body into XML: ' . $errorMessage);
